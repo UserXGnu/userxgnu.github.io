@@ -5,8 +5,8 @@
     <description></description>
     <link>http://userxgnu.github.io/</link>
     <atom:link href="http://userxgnu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 06 Nov 2015 00:47:55 -0300</pubDate>
-    <lastBuildDate>Fri, 06 Nov 2015 00:47:55 -0300</lastBuildDate>
+    <pubDate>Fri, 06 Nov 2015 00:55:23 -0300</pubDate>
+    <lastBuildDate>Fri, 06 Nov 2015 00:55:23 -0300</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -47,7 +47,7 @@ uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Alocou, agora desalloque !!!
 C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
-dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e a memória essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.&lt;/li&gt;
+dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;-- OBS: &lt;/p&gt;
@@ -62,11 +62,11 @@ dinâmicamente, isto é, no heap, após a função que alocou essa variável aca
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alloca&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;A função alloca(), aloca dinamicamente &lt;size&gt; bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...&lt;/p&gt;
+&lt;p&gt;A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;Caso você vá utilizar a função alloca (), utiliza a checagem _&lt;em&gt;libc&lt;/em&gt;use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
-caso essa &amp;quot;função&amp;quot; retorne &lt;false&gt;, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for &lt;false&gt;, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.&lt;/p&gt;&lt;/li&gt;
+caso essa &amp;quot;função&amp;quot; retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 

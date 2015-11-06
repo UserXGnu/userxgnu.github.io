@@ -46,7 +46,7 @@ Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah..
 
  - Alocou, agora desalloque !!!
  C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
- dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e a memória essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.
+ dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.
  
  -- OBS: 
 {% highlight C %}
@@ -60,10 +60,10 @@ Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah..
     void * alloca (size_t size);
 {% endhighlight%}
 
-A função alloca(), aloca dinamicamente <size> bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...
+A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...
 
 1. Caso você vá utilizar a função alloca (), utiliza a checagem __libc_use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
-caso essa "função" retorne <false>, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for <false>, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.
+caso essa "função" retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.
 
 2. Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.
 
