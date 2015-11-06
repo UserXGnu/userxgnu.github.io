@@ -80,7 +80,7 @@ em qualquer compilador C de forma a garantir a compatibilidade do seu código.</
     <span class="kt">void</span> <span class="o">*</span> <span class="n">malloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
     <span class="kt">void</span> <span class="o">*</span> <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span></code></pre></figure>
 
-<p>A função malloc(), como você deve saber, alloca <size> bytes de memória no heap. A idéia é que se possa alocar
+<p>A função malloc(), como você deve saber, alloca <code>size</code> bytes de memória no heap. A idéia é que se possa alocar
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:</p>
 
 <figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>      <span class="c1">// 4 bytes;
@@ -116,7 +116,7 @@ dinâmicamente, isto é, no heap, após a função que alocou essa variável aca
 <p>A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...</p>
 
 <ol>
-<li><p>Caso você vá utilizar a função alloca (), utiliza a checagem &#39;_<em>libc</em>use_alloca (size)&#39;, em que &#39;size&#39; é o tamanho em bytes que deseja alocar,
+<li><p>Caso você vá utilizar a função alloca (), utiliza a checagem <code>__libc_use_alloca (size)</code>, em que <code>size</code> é o tamanho em bytes que deseja alocar,
 caso essa &quot;função&quot; retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.</p></li>
 <li><p>Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.</p></li>
 </ol>
@@ -129,7 +129,7 @@ caso essa &quot;função&quot; retorne false, não aloque ou utilize malloc (), 
 
 <p>A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).</p>
 
-<p>Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alicação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.</p>
+<p>Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alocação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.</p>
 
 <h2>PLUS</h2>
 

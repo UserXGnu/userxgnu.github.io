@@ -5,8 +5,8 @@
     <description></description>
     <link>http://userxgnu.github.io/</link>
     <atom:link href="http://userxgnu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 06 Nov 2015 01:01:16 -0300</pubDate>
-    <lastBuildDate>Fri, 06 Nov 2015 01:01:16 -0300</lastBuildDate>
+    <pubDate>Fri, 06 Nov 2015 01:03:38 -0300</pubDate>
+    <lastBuildDate>Fri, 06 Nov 2015 01:03:38 -0300</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -29,7 +29,7 @@ em qualquer compilador C de forma a garantir a compatibilidade do seu código.&l
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;A função malloc(), como você deve saber, alloca &lt;size&gt; bytes de memória no heap. A idéia é que se possa alocar
+&lt;p&gt;A função malloc(), como você deve saber, alloca &lt;code&gt;size&lt;/code&gt; bytes de memória no heap. A idéia é que se possa alocar
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// 4 bytes;
@@ -65,7 +65,7 @@ dinâmicamente, isto é, no heap, após a função que alocou essa variável aca
 &lt;p&gt;A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;Caso você vá utilizar a função alloca (), utiliza a checagem &amp;#39;_&lt;em&gt;libc&lt;/em&gt;use_alloca (size)&amp;#39;, em que &amp;#39;size&amp;#39; é o tamanho em bytes que deseja alocar,
+&lt;li&gt;&lt;p&gt;Caso você vá utilizar a função alloca (), utiliza a checagem &lt;code&gt;__libc_use_alloca (size)&lt;/code&gt;, em que &lt;code&gt;size&lt;/code&gt; é o tamanho em bytes que deseja alocar,
 caso essa &amp;quot;função&amp;quot; retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
@@ -78,7 +78,7 @@ caso essa &amp;quot;função&amp;quot; retorne false, não aloque ou utilize mal
 
 &lt;p&gt;A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).&lt;/p&gt;
 
-&lt;p&gt;Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alicação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.&lt;/p&gt;
+&lt;p&gt;Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alocação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.&lt;/p&gt;
 
 &lt;h2&gt;PLUS&lt;/h2&gt;
 
