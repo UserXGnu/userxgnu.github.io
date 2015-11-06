@@ -116,7 +116,7 @@ dinâmicamente, isto é, no heap, após a função que alocou essa variável aca
 <p>A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...</p>
 
 <ol>
-<li><p>Caso você vá utilizar a função alloca (), utiliza a checagem _<em>libc</em>use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
+<li><p>Caso você vá utilizar a função alloca (), utiliza a checagem &#39;_<em>libc</em>use_alloca (size)&#39;, em que &#39;size&#39; é o tamanho em bytes que deseja alocar,
 caso essa &quot;função&quot; retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.</p></li>
 <li><p>Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.</p></li>
 </ol>
