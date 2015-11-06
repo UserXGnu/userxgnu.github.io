@@ -5,8 +5,8 @@
     <description></description>
     <link>http://userxgnu.github.io/</link>
     <atom:link href="http://userxgnu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 06 Nov 2015 00:55:23 -0300</pubDate>
-    <lastBuildDate>Fri, 06 Nov 2015 00:55:23 -0300</lastBuildDate>
+    <pubDate>Fri, 06 Nov 2015 00:57:32 -0300</pubDate>
+    <lastBuildDate>Fri, 06 Nov 2015 00:57:32 -0300</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -107,8 +107,8 @@ caso essa &amp;quot;função&amp;quot; retorne false, não aloque ou utilize mal
 escolha de allocator caso-a-caso.&lt;/p&gt;
 </description>
         <pubDate>Thu, 05 Nov 2015 11:10:00 -0300</pubDate>
-        <link>http://userxgnu.github.io/mallocvsalloc</link>
-        <guid isPermaLink="true">http://userxgnu.github.io/mallocvsalloc</guid>
+        <link>http://userxgnu.github.io/malloc-vs-alloc</link>
+        <guid isPermaLink="true">http://userxgnu.github.io/malloc-vs-alloc</guid>
         
         
         <category>Coding</category>
