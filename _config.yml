@@ -1,0 +1,25 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+title: UserXLab
+email: user_x@riseup.net
+#description: > # this means to ignore newlines until "baseurl:"
+  
+#  Write an awesome description for your new site here. You can edit this
+#  line in _config.yml. It will appear in your document head meta (for
+#  Google search results) and in your feed.xml site description.
+gpgfingerprint: "BB2F 998E 0D8F A58B 2257  BAAC CBF5 FA7E C726 88A5"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://userxgnu.github.io" # the base hostname & protocol for your site
+github_username:  UserXGnu
+
+# Build settings
+#markdown: kramdown
+markdown: redcarpet
+
+permalink: /:title

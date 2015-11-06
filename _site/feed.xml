@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>UserXLab</title>
+    <description></description>
+    <link>http://userxgnu.github.io/</link>
+    <atom:link href="http://userxgnu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 06 Nov 2015 00:45:36 -0300</pubDate>
+    <lastBuildDate>Fri, 06 Nov 2015 00:45:36 -0300</lastBuildDate>
+    <generator>Jekyll v3.0.0</generator>
+    
+      <item>
+        <title>C - Malloc() vs Alloca()</title>
+        <description>&lt;h2&gt;Prefácio&lt;/h2&gt;
+
+&lt;p&gt;Bom, eu não poderia dizer qual das duas funções é melhor. Contúdo, posso fazer um review sobre 
+alocação dinâmica e então ressaltar as diferenças entre as duas evidenciando, é claro, as vantagens
+e as desvantagens de cada uma. Tendo dito isso, sigamos...&lt;/p&gt;
+
+&lt;h2&gt;malloc ()&lt;/h2&gt;
+
+&lt;p&gt;A função malloc () esta presente no header stdlib.h. Ela faz parte do ansii C e portanto, estará presente
+em qualquer compilador C de forma a garantir a compatibilidade do seu código.&lt;/p&gt;
+
+&lt;h1&gt;Protótipo:&lt;/h1&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;    
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A função malloc(), como você deve saber, alloca &lt;size&gt; bytes de memória no heap. A idéia é que se possa alocar
+uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// 4 bytes;
+&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;// 4 bytes;
+&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;// 8 bytes;
+&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;// 4 bytes;
+&lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;byte&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc...), é muito comum que se use o malloc para realizar essa alocação.&lt;/p&gt;
+
+&lt;h1&gt;OK, e dai?&lt;/h1&gt;
+
+&lt;p&gt;Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah...&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Alocou, agora desalloque !!!
+C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
+dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e a memória essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;-- OBS: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;çã&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;o&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;que&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;desaloca&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;da&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mem&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ó&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ria&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Bom, essa é a parte em que a função Alloca() entra em jogo.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
+&lt;/span&gt;    
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alloca&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A função alloca(), aloca dinamicamente &lt;size&gt; bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Caso você vá utilizar a função alloca (), utiliza a checagem _&lt;em&gt;libc&lt;/em&gt;use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
+caso essa &amp;quot;função&amp;quot; retorne &lt;false&gt;, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for &lt;false&gt;, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1&gt;Por que tanta preocupação para usar essa função então ???&lt;/h1&gt;
+
+&lt;p&gt;Quando a função alloca() é chamada por outra função, a função que a chama, possui uma stack própria chamada stack frame, neste caso, os bytes serão alocados no próprio stackframe da função que chamou alloca(), o que significa que quando a função se encerrar, o stackframe da função deixará de existir e os bytes alocados se perderão. A boa notícia, você não terá mais a responsabilidade de desalocar os bytes que alocou dinamicamente (não use free () para tentar desalocar esses bytes manualmente). A má nóticia é que vc deve ser cauteloso ao utilizar o alloca ().&lt;/p&gt;
+
+&lt;h1&gt;Conclusões:&lt;/h1&gt;
+
+&lt;p&gt;A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).&lt;/p&gt;
+
+&lt;p&gt;Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alicação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.&lt;/p&gt;
+
+&lt;h2&gt;PLUS&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função &lt;calloc()&gt;, essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com &amp;quot;0&amp;quot;, evitando a necessidade de incializá-los.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Protótipo:&lt;/h1&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
+&lt;/span&gt;    
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Exemplo de substituição:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;memset&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// ==
+&lt;/span&gt;    
+    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Bom galera, espero que tenham gostado e que eu tenha esclarecido ao menos um pouco essa questão da alocação dinâmica e qual a melhor
+escolha de allocator caso-a-caso.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 05 Nov 2015 11:10:00 -0300</pubDate>
+        <link>http://userxgnu.github.io/mallocvsalloc</link>
+        <guid isPermaLink="true">http://userxgnu.github.io/mallocvsalloc</guid>
+        
+        
+        <category>Coding</category>
+        
+        <category>C</category>
+        
+      </item>
+    
+      <item>
+        <title>Welcome to Jekyll!</title>
+        <description>&lt;p&gt;You’ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+
+&lt;p&gt;To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+
+&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Tom&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints &#39;Hi, Tom&#39; to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 02 Nov 2015 10:21:02 -0300</pubDate>
+        <link>http://userxgnu.github.io/welcome-to-jekyll</link>
+        <guid isPermaLink="true">http://userxgnu.github.io/welcome-to-jekyll</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+  </channel>
+</rss>
