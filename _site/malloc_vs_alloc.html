@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>C - Malloc() vs Alloca()</title>
+  <meta name="description" content="Prefácio">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://userxgnu.github.io/malloc_vs_alloc">
+  <link rel="alternate" type="application/rss+xml" title="UserXLab" href="http://userxgnu.github.io/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">UserXLab</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">C - Malloc() vs Alloca()</h1>
+    <p class="post-meta"><time datetime="2015-11-05T11:10:00-03:00" itemprop="datePublished">Nov 5, 2015</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h2>Prefácio</h2>
+
+<p>Bom, eu não poderia dizer qual das duas funções é melhor. Contúdo, posso fazer um review sobre 
+alocação dinâmica e então ressaltar as diferenças entre as duas evidenciando, é claro, as vantagens
+e as desvantagens de cada uma. Tendo dito isso, sigamos...</p>
+
+<h2>malloc ()</h2>
+
+<p>A função malloc () esta presente no header stdlib.h. Ela faz parte do ansii C e portanto, estará presente
+em qualquer compilador C de forma a garantir a compatibilidade do seu código.</p>
+
+<h1>Protótipo:</h1>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;stdlib.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">malloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span></code></pre></figure>
+
+<p>A função malloc(), como você deve saber, alloca <size> bytes de memória no heap. A idéia é que se possa alocar
+uma quantidade de bytes não definida por um tipo primitivo. Exemplo:</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>      <span class="c1">// 4 bytes;
+</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes;
+</span>    <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>   <span class="c1">// 8 bytes;
+</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes;
+</span>    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>     <span class="o">//</span> <span class="mi">1</span> <span class="n">byte</span><span class="p">;</span></code></pre></figure>
+
+<p>Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc...), é muito comum que se use o malloc para realizar essa alocação.</p>
+
+<h1>OK, e dai?</h1>
+
+<p>Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah...</p>
+
+<ul>
+<li>Alocou, agora desalloque !!!
+C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
+dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.</li>
+</ul>
+
+<p>-- OBS: </p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span> <span class="o">//</span> <span class="n">fun</span><span class="err">çã</span><span class="n">o</span> <span class="n">que</span> <span class="n">desaloca</span> <span class="o">&lt;</span><span class="n">ptr</span><span class="o">&gt;</span> <span class="n">da</span> <span class="n">mem</span><span class="err">ó</span><span class="n">ria</span><span class="p">.</span></code></pre></figure>
+
+<ul>
+<li>Bom, essa é a parte em que a função Alloca() entra em jogo.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;alloca.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">alloca</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></code></pre></figure>
+
+<p>A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...</p>
+
+<ol>
+<li><p>Caso você vá utilizar a função alloca (), utiliza a checagem _<em>libc</em>use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
+caso essa &quot;função&quot; retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.</p></li>
+<li><p>Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.</p></li>
+</ol>
+
+<h1>Por que tanta preocupação para usar essa função então ???</h1>
+
+<p>Quando a função alloca() é chamada por outra função, a função que a chama, possui uma stack própria chamada stack frame, neste caso, os bytes serão alocados no próprio stackframe da função que chamou alloca(), o que significa que quando a função se encerrar, o stackframe da função deixará de existir e os bytes alocados se perderão. A boa notícia, você não terá mais a responsabilidade de desalocar os bytes que alocou dinamicamente (não use free () para tentar desalocar esses bytes manualmente). A má nóticia é que vc deve ser cauteloso ao utilizar o alloca ().</p>
+
+<h1>Conclusões:</h1>
+
+<p>A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).</p>
+
+<p>Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alicação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.</p>
+
+<h2>PLUS</h2>
+
+<ul>
+<li>Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função <calloc()>, essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com &quot;0&quot;, evitando a necessidade de incializá-los.</li>
+</ul>
+
+<h1>Protótipo:</h1>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;alloca.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">calloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></code></pre></figure>
+
+<ul>
+<li>Exemplo de substituição:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span> <span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+    <span class="n">memset</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">c</span><span class="p">));</span>
+    
+    <span class="c1">// ==
+</span>    
+    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">char</span><span class="p">));</span></code></pre></figure>
+
+<p>Bom galera, espero que tenham gostado e que eu tenha esclarecido ao menos um pouco essa questão da alocação dinâmica e qual a melhor
+escolha de allocator caso-a-caso.</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">UserXLab</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>UserXLab</li>
+          <li><a href="mailto:user_x@riseup.net">user_x@riseup.net</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/UserXGnu"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">UserXGnu</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>BB2F 998E 0D8F A58B 2257  BAAC CBF5 FA7E C726 88A5</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

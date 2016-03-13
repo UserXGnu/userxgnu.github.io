@@ -1,0 +1,99 @@
+<h2 id="prefcio">Prefácio</h2>
+
+<p>Bom, eu não poderia dizer qual das duas funções é melhor. Contúdo, posso fazer um review sobre 
+alocação dinâmica e então ressaltar as diferenças entre as duas evidenciando, é claro, as vantagens
+e as desvantagens de cada uma. Tendo dito isso, sigamos…</p>
+
+<h2 id="malloc-">malloc ()</h2>
+
+<p>A função malloc () esta presente no header stdlib.h. Ela faz parte do ansii C e portanto, estará presente
+em qualquer compilador C de forma a garantir a compatibilidade do seu código.</p>
+
+<h1 id="prottipo">Protótipo:</h1>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;stdlib.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">malloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span></code></pre></figure>
+
+<p>A função malloc(), como você deve saber, alloca <size> bytes de memória no heap. A idéia é que se possa alocar
+uma quantidade de bytes não definida por um tipo primitivo. Exemplo:</size></p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>      <span class="c1">// 4 bytes;
+</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes;
+</span>    <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>   <span class="c1">// 8 bytes;
+</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes;
+</span>    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>     <span class="o">//</span> <span class="mi">1</span> <span class="n">byte</span><span class="p">;</span></code></pre></figure>
+
+<p>Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc…), é muito comum que se use o malloc para realizar essa alocação.</p>
+
+<h1 id="ok-e-dai">OK, e dai?</h1>
+
+<p>Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah…</p>
+
+<ul>
+  <li>Alocou, agora desalloque !!!
+ C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
+ dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.</li>
+</ul>
+
+<p>– OBS:</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span> <span class="o">//</span> <span class="n">fun</span><span class="err">çã</span><span class="n">o</span> <span class="n">que</span> <span class="n">desaloca</span> <span class="o">&lt;</span><span class="n">ptr</span><span class="o">&gt;</span> <span class="n">da</span> <span class="n">mem</span><span class="err">ó</span><span class="n">ria</span><span class="p">.</span></code></pre></figure>
+
+<ul>
+  <li>Bom, essa é a parte em que a função Alloca() entra em jogo.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;alloca.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">alloca</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></code></pre></figure>
+
+<p>A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá…</p>
+
+<ol>
+  <li>
+    <p>Caso você vá utilizar a função alloca (), utiliza a checagem __libc_use_alloca (size), em que size é o tamanho em bytes que deseja alocar,
+caso essa “função” retorne false, não aloque ou utilize malloc (), uma vez que se o retorno dessa função for false, significa que a quantidade de bytes que deseja alocar pode bypassar a checagem de stack overflow, uma vez que a stack, diferente do heap, não foi feita para alocação dinâmica e portanto há o risco de sobrescrever algum valor ou mesmo estourar o tamanho da stack.</p>
+  </li>
+  <li>
+    <p>Os bytes alocados dinamicamente com a função alloca() devem ser utilizados apenas dentro da função que os alocou.</p>
+  </li>
+</ol>
+
+<h1 id="por-que-tanta-preocupao-para-usar-essa-funo-ento-">Por que tanta preocupação para usar essa função então ???</h1>
+
+<p>Quando a função alloca() é chamada por outra função, a função que a chama, possui uma stack própria chamada stack frame, neste caso, os bytes serão alocados no próprio stackframe da função que chamou alloca(), o que significa que quando a função se encerrar, o stackframe da função deixará de existir e os bytes alocados se perderão. A boa notícia, você não terá mais a responsabilidade de desalocar os bytes que alocou dinamicamente (não use free () para tentar desalocar esses bytes manualmente). A má nóticia é que vc deve ser cauteloso ao utilizar o alloca ().</p>
+
+<h1 id="concluses">Conclusões:</h1>
+
+<p>A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).</p>
+
+<p>Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se preocupar em desalocar para evitar memory leaking. Possui o desempenho ligeiramente inferior à função alloca (), não possui limite de alicação e, por usar o heap, após a função que alocou os bytes acabar, os bytes permanecem lá, tudo que o programador precisa fazer é manter uma referência a eles até que chegue o momento de liberá-los.</p>
+
+<h2 id="plus">PLUS</h2>
+
+<ul>
+  <li>Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função &lt;calloc()&gt;, essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com “0”, evitando a necessidade de incializá-los.</li>
+</ul>
+
+<h1 id="prottipo-1">Protótipo:</h1>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;alloca.h&gt;
+</span>    
+    <span class="kt">void</span> <span class="o">*</span> <span class="n">calloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></code></pre></figure>
+
+<ul>
+  <li>Exemplo de substituição:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span> <span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+    <span class="n">memset</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">c</span><span class="p">));</span>
+    
+    <span class="c1">// ==
+</span>    
+    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">char</span><span class="p">));</span></code></pre></figure>
+
+<p>Bom galera, espero que tenham gostado e que eu tenha esclarecido ao menos um pouco essa questão da alocação dinâmica e qual a melhor
+escolha de allocator caso-a-caso.</p>
+
