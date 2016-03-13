@@ -81,7 +81,7 @@ Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se 
 
 ## PLUS
 
- - Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função <calloc()>, essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com "0", evitando a necessidade de incializá-los.
+ - Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função calloc(), essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com "0", evitando a necessidade de incializá-los.
  
 # Protótipo:
 {% highlight C %}
