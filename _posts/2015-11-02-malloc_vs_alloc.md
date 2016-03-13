@@ -30,11 +30,13 @@ A função malloc(), como você deve saber, alloca <size> bytes de memória no h
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:
 
 {% highlight C %}
-    int i;      // 4 bytes;
-    float f;    // 4 bytes;
-    double d;   // 8 bytes;
-    float f;    // 4 bytes;
-    char c;     // 1 byte;
+
+    int i;      // 4 bytes
+    float f;    // 4 bytes
+    double d;   // 8 bytes
+    float f;    // 4 bytes
+    char c;     // 1 byte
+
 {% endhighlight%}
 
 Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc...), é muito comum que se use o malloc para realizar essa alocação.
