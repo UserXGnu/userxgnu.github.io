@@ -152,7 +152,7 @@ associar e então retorna o valor da quantidade de parametros que conseguiu asso
 # Considerações
 
 Agradecendo ai à galera do [LampiãoSec](http://lampiaosec.github.io "LampiãoSec") e à galera
-que compareceu e vem comparecendo nas viradas hacker. Qualquer contribuição será vem vista e
+que compareceu e vem comparecendo nas viradas hacker. Qualquer contribuição será bem vista e
 qualquer crítica bem aceita.
 
 
