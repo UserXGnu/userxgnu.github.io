@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>C - Checking/Treating user input </title>
+  <title>C - Checking/Handling user input </title>
   <meta name="description" content="Do que se trata">
 
   <link rel="stylesheet" href="/css/main.css">
@@ -64,24 +64,23 @@
   <div class="post-content" itemprop="articleBody">
     <h2>Do que se trata</h2>
 
-<p>Então, muitas linguagems oferencem suporte a tratamento de exceções e features desse tipo
-que facilitam pra tatar a entrada do usuário. Nesse post iremos falar sobre formas tratar
+<p>Então, muitas linguagens oferecem suporte a eventos, tratamento de exceções e outras features do tipo
+a fim de facilitar o manuseio de entradas do usuário. Neste post iremos falar sobre formas de tratar
 a entrada do usuário sob alguns aspectos.</p>
 
 <h4>nota:</h4>
 
 <blockquote>
-<p><font size=3>Esse post é resultado de endagações que surgiram durante uma das 
-<a href=http://lampiaosec.github.io/virada-hacker>virada-hacker&#39;s</a> que acontecem
-do <a href=http://lampiaosec.github.io>LampiãoSec</a>. Com base nessas endagações sobre 
-como tratar a entrada do usuário em C, fizemos então um pequeno processo investigativo
-ali na hora e chegamos a essas conclusões, portanto, devem existir formas mais faceis ou
-eficientes de se fazer isso...não me julguem =-D </font></p>
+<p><font size=3>Este post é resultado de questionamentos que surgiram durante mais uma edição do 
+<a href=http://lampiaosec.github.io/virada-hacker>virada-hacker</a>, série de encontros promovidos pelo <a href=http://lampiaosec.github.io>LampiãoSec</a>. Com base nessas indagações sobre 
+como tratar as entradas do usuário na linguagem C, fizemos então um pequeno processo investigativo
+ali, na hora, até chegarmos às seguintes conclusões, portanto, certamente há maneiras mais simples ou
+eficientes de se fazer isso... Apenas não nos julguem =-D </font></p>
 </blockquote>
 
 <h1>Codigo base</h1>
 
-<p>Vamos levar em consideração pra o nosso propósito o codigo a seguir:</p>
+<p>Vamos levar em consideração para o nosso propósito o codigo a seguir:</p>
 
 <figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
@@ -99,15 +98,15 @@ eficientes de se fazer isso...não me julguem =-D </font></p>
         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
     <span class="p">}</span></code></pre></figure>
 
-<p>Agora, considere que este é um progroma em cujo os valores de entrada do usuário precisam
-ser, necessariamente, um char e um int por qualquer razão que dependeria da aplicação em si.
-Como podemos garantir que o usuário digitou de fato um char e um int e n dois int&#39;s ou dois chars
-e ainda mais, se digitou os dois valores e não apenas um?</p>
+<p>Agora, considere que este é um pronograma no qual os valores de entrada do usuário precisam
+ser, necessariamente, um char e um int por qualquer motivo dependente da aplicação em si.
+Como podemos garantir que o usuário digitou de fato um char e um int e não dois int&#39;s ou dois char&#39;s?
+E ainda, se digitou os dois valores e não apenas um?</p>
 
 <h1>Solução</h1>
 
-<p>Vejo muitos codigos na internet fazendo a utilização do scanf() mas realmente poucos com 
-uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
+<p>Tenho visto muitos codigos na internet fazendo a utilização do scanf(), mas realmente poucos implementam 
+uma checagem de seu retorno. Nesse sentido, é importante observar a manpage:</p>
 
 <h4>nota:</h4>
 
@@ -125,7 +124,7 @@ uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
 </font></p>
 </blockquote>
 
-<p>Então podemos solucionar parte do problema alterando o codigo pra ficar mais ou menos assim:</p>
+<p>Então podemos solucionar parte do problema deixando o codigo mais ou menos assim:</p>
 
 <figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
@@ -151,7 +150,7 @@ uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
 <h2>Mas ainda não acabou</h2>
 
 <p>Mas ainda existe o problema de não conseguir saber se o usuário passou os valores dos
-tipos esperados pela aplicação. Pra solucionar esse problema, verifiquei o funcionamento
+tipos esperados pela aplicação. Objetivando a solução desse problema, verifiquei o funcionamento
 da função atoi()</p>
 
 <h4>protótipo:</h4>
@@ -165,11 +164,11 @@ da função atoi()</p>
         <span class="o">*</span> <span class="n">of</span> <span class="n">the</span> <span class="n">string</span> <span class="n">pointed</span> <span class="n">to</span>  <span class="n">by</span>  <span class="n">nptr</span>  <span class="n">to</span>  <span class="kt">int</span><span class="p">.</span>
        <span class="o">/*</span></code></pre></figure>
 
-<p>Para solucionar esse problema então, podemos tentar converter cada valor de entrada pra
-inteiro, utilizando essa função, caso ela retorne um valor inteiro valido, então o usuário
-digitou um número e não um char, mas caso ela retorne zero, de erro, então saberemos que o
+<p>A solução aqui proposta consiste em tentar a converção de cada valor de entrada para
+inteiro através dessa função, caso o retorno seja um inteiro valido, então o usuário
+digitou um número e não um char, mas caso ela retorne zero (erro), então saberemos que o
 usuário entrou com um caracetere válido. O mesmo serve para o inteiro utilizando a função
-itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria:</p>
+itoa (), que faz justamente processo inverso, converte um inteiro em string. Vejamos como ficaria:</p>
 
 <figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
@@ -196,14 +195,14 @@ itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria
     <span class="p">}</span></code></pre></figure>
 
 <p>Caso scanf () retorne um numero diferente da quantidade de parametros, o usuário não passou
-um int como segundo parametro, pois um char pode receber um inteiro &lt;= 127 e nesse caso, o scanf
-retorna corretamente mas um inteiro não pode ser passado como caractere, o scanf() não consegue
+um int como segundo parametro, pois um char pode receber um inteiro &lt;= 127. Nesse caso, o scanf
+retorna corretamente, porém um inteiro não pode ser passado como caractere, o scanf() não consegue
 associar e então retorna o valor da quantidade de parametros que conseguiu associar.</p>
 
 <h1>Considerações</h1>
 
 <p>Agradecendo ai à galera do <a href="http://lampiaosec.github.io" title="LampiãoSec">LampiãoSec</a> e à galera
-que compareceu e vem comparecendo nas viradas hacker. Qualquer contribuição será vem vista e
+que compareceu e vem comparecendo nas viradas hacker. Qualquer contribuição será bem vinda e
 qualquer crítica bem aceita.</p>
 
   </div>
