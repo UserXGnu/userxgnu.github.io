@@ -140,7 +140,7 @@ Como pode ver, as macros funcionam como funções mesmo, executam operações ta
     }
 ~~~
 
-Ao chamar essa macro *SOMA* e passar um tipo de dado pra como parâmetro (*int*, *char* e etc), uma função *soma()* será declarada
+Ao chamar essa macro *SOMA* e passar um tipo de dado como parâmetro (*int*, *char* e etc), uma função *soma()* será declarada
 e ela será do tipo passado para macro e deverá receber dois parâmetros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
 de dádos. Imagine só você ter uma macro pra gerar uma árvore binária que irá armazenar elementos do tipo que você escolher. Se você
 precisa de uma arvore binária para inteiros, ou para strings e etc, poderá criar uma apenas chamando a macro e pronto.
