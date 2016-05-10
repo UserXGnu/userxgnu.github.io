@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Fat Pointers Part 1: Macros"
-date: 2016-05-11 12:00:00 -0300
+date: 2016-05-10 12:00:00 -0300
 categories:
     - Coding
     - C
@@ -30,7 +30,7 @@ e seu paradimga.
 
 ### 1. A quem se destinam esses post's?
 
-Essa série é destinada à qualquer pessoa com conhecimento básico na linguágem de programação
+Essa série é destinada à qualquer pessoa com conhecimento básico na linguagem de programação
 C e esteja interessado em aprender algumas coisas interessantes que não são muito frisadas (algumas
 vezes nem citadas) nos lívros de programação. Ou seja, fazer algumas brincadeiras explorando as 
 potencialidades do C de forma esperta e útil.
@@ -38,7 +38,7 @@ potencialidades do C de forma esperta e útil.
 ##### Nota:
         Os exemplos de códigos expostos em toda a série não se destinam 
     à códigos de produção. Caso tenha interesse em desenvolver de forma 
-    mais robusta utilizando tecnicas como as que mostrarei, o codigo 
+    mais robusta utilizando técnicas como as que mostrarei, o código 
     precisará ser melhor elaborado dando a ele maior escalabilidade e 
     mantenabilidade.
     
@@ -55,7 +55,7 @@ Ou seja, você pode criar uma "label" e dar a ela um conjunto de instruções, t
 encontrada no código, será substituída pelas instruções atribuídas à ela e tudo isso, em tempo de compilaçao.
 
 #### 2. Por quê usar macros?
-Bom, existem situações em que é preciso digitar certos codigos repetitivamente mas não seria legal criar função para aquilo
+Bom, existem situações em que é preciso digitar certos códigos repetitivamente mas não seria legal criar função para aquilo
 porque poderia pesar no desempenho, então as macros entram ai pra ajudar. Além disso, existem situações mais peculiares em 
 que as macros podem ser utilizadas, para criar camadas de abstração que serão resolvidas em tempo de compilação, como dito
 anteriormente, não aumentando assim a carga do programa como um todo. (depende da implementação do que se quer abstrair). 
@@ -141,7 +141,7 @@ Como pode ver, as macros funcionam como funções mesmo, executam operações ta
 ~~~
 
 Ao chamar essa macro *SOMA* e passar um tipo de dado pra como parâmetro (*int*, *char* e etc), uma função *soma()* será declarada
-e ela será do tipo passado para macro e deverá receber dois parametros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
+e ela será do tipo passado para macro e deverá receber dois parâmetros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
 de dádos. Imagine só você ter uma macro pra gerar uma árvore binária que irá armazenar elementos do tipo que você escolher. Se você
 precisa de uma arvore binária para inteiros, ou para strings e etc, poderá criar uma apenas chamando a macro e pronto.
 
@@ -179,8 +179,8 @@ Nesse caso, o intuito dessa macro é percorrer o vetor e fazer, para cada elemen
 #### 3. Conclusão
 
 Espero ter ajudado a esclarecer o assunto, e agora devem estar se perguntando porque estou falando sobre macros num e o que isso
-tudo tem a ver com fat pointers, na realidade...nada! Contúdo, fat pointer é uma técnica e não uma feature do compilador, por essa
-razão, lidar com fat pointers acaba sendo bem custoso pro programador pela quantidade de codigo que cresce um pouco e as macros serão
+tudo tem a ver com fat pointers, na realidade...nada! contudo, fat pointer é uma técnica e não uma feature do compilador, por essa
+razão, lidar com fat pointers acaba sendo bem custoso pro programador pela quantidade de código que cresce um pouco e as macros serão
 úteis nesse sentido.  
 
 Para aqueles que querem ficar mestres em macros e tudo mais, seguem alguns links que podem ajudar:
