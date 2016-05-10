@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Fat Pointers Part 1: Macros"
-date: 2016-05-10 12:00:00 -0300
+date: 2016-05-10 08:00:00 -0300
 categories:
     - Coding
     - C
