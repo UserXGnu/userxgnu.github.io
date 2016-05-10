@@ -9,7 +9,7 @@ categories:
 ---
 
 1. Introdução
-    1. A quem se destinam esses post's?
+    1. A quem se destina essa série?
 2. Macros
     1. O que são?
     2. Por quê usar?
@@ -119,7 +119,7 @@ Como pode ver, as macros funcionam como funções mesmo, executam operações ta
 
 #### 4. Exemplos práticos
 
-## Gerador de função beseado em no tipo indicdo
+## Gerador de função beseado no tipo indicado
 
 ~~~ c
     #include <stdio.h>
