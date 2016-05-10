@@ -19,25 +19,23 @@ A função malloc () esta presente no header stdlib.h. Ela faz parte do ansii C 
 em qualquer compilador C de forma a garantir a compatibilidade do seu código.
 
 # Protótipo:
-{% highlight C %}
+~~~ c
     #include <stdlib.h>
     
     void * malloc (size_t size);
     void * free (void * ptr);
-{% endhighlight %}
-    
+~~~
+
 A função malloc(), como você deve saber, alloca <size> bytes de memória no heap. A idéia é que se possa alocar
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:
 
-{% highlight C %}
-
+~~~ c
     int i;      // 4 bytes
     float f;    // 4 bytes
     double d;   // 8 bytes
     float f;    // 4 bytes
     char c;     // 1 byte
-
-{% endhighlight%}
+~~~
 
 Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc...), é muito comum que se use o malloc para realizar essa alocação.
 
@@ -50,17 +48,19 @@ Pois bem, existem algum fatores que devemos levar em consideração. Vamos lah..
  C é uma linguagem que transfere a responsabilidade de manipular a memória para o programador, nesse caso, quando uma variável é alocada 
  dinâmicamente, isto é, no heap, após a função que alocou essa variável acabar, a variável não é desalocada como variáveis comuns. Nesse sentido, é importante que a referencia à memória alocada seja preservada de alguma forma para que futuramente o programador possa desalocar a variável. Caso se esqueça, e essa função que chama malloc for chamada várias vezes, um problema conhecido como memory leaking acontece. Nesse caso, a memória vai sendo alocada e alocada e não é liberada, dai o sistema começa a ficar mais lento, até que enfim, para de funcionar por estar com a memória entupida.
  
- -- OBS: 
-{% highlight C %}
+ -- OBS:
+
+~~~ c
     free (void * ptr); // função que desaloca <ptr> da memória.
-{% endhighlight%}
+~~~
 
  - Bom, essa é a parte em que a função Alloca() entra em jogo.
-{% highlight C %}
+
+~~~ c
     #include <alloca.h>
     
     void * alloca (size_t size);
-{% endhighlight%}
+~~~
 
 A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá...
 
@@ -84,22 +84,21 @@ Malloc(), força o programador a tomar cuidado com o que aloca no sentido de se 
  - Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função calloc(), essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com "0", evitando a necessidade de incializá-los.
  
 # Protótipo:
-{% highlight C %}
+
+~~~ c
     #include <alloca.h>
     
     void * calloc (size_t size);
-{% endhighlight%}
+~~~
 
  - Exemplo de substituição:
  
- {% highlight C %}
+~~~ c
     char * c = (char *) malloc (32*sizeof(char));
     memset (c, 0x00, sizeof (c));
-    
     // ==
-    
     char * c = (char *) calloc (32, sizeof (char));
-{% endhighlight%}
+~~~
 
 Bom galera, espero que tenham gostado e que eu tenha esclarecido ao menos um pouco essa questão da alocação dinâmica e qual a melhor
 escolha de allocator caso-a-caso.

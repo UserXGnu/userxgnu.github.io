@@ -13,13 +13,13 @@ email: user_x@riseup.net
 #  Write an awesome description for your new site here. You can edit this
 #  line in _config.yml. It will appear in your document head meta (for
 #  Google search results) and in your feed.xml site description.
-gpgfingerprint: "BB2F 998E 0D8F A58B 2257  BAAC CBF5 FA7E C726 88A5"
+gpgfingerprint: "9075 FD7F CA78 4C3F B1C1  2D9E D75A FD21 D99E 2316"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://userxgnu.github.io" # the base hostname & protocol for your site
 github_username:  UserXGnu
 
 # Build settings
-#markdown: kramdown
-markdown: redcarpet
+markdown: kramdown
+#markdown: redcarpet
 
 permalink: /:title

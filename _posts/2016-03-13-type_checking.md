@@ -14,18 +14,22 @@ que facilitam pra tatar a entrada do usuário. Nesse post iremos falar sobre for
 a entrada do usuário sob alguns aspectos.
 
 #### nota:
-> <font size=3>Esse post é resultado de endagações que surgiram durante uma das 
-<a href=http://lampiaosec.github.io/virada-hacker>virada-hacker's</a> que acontecem
-do <a href=http://lampiaosec.github.io>LampiãoSec</a>. Com base nessas endagações sobre 
-como tratar a entrada do usuário em C, fizemos então um pequeno processo investigativo
-ali na hora e chegamos a essas conclusões, portanto, devem existir formas mais faceis ou
-eficientes de se fazer isso...não me julguem =-D </font>
+> Esse post é resultado de endagações que surgiram durante uma das 
+> [#ViradaHacker]'s que acontecem no [#RaulHackerClube]  do [LampiãoSec]. 
+> Com base nessas endagações sobre como tratar a entrada do usuário em C, 
+> fizemos então um pequeno processo investigativo ali na hora e chegamos 
+> a essas conclusões, portanto, devem existir formas mais faceis ou
+> eficientes de se fazer isso...não me julguem =-D 
+
+[#ViradaHacker]: http://lampiaosec.github.io/virada-hacker
+[#RaulHackerClube]: http://raulhc.cc
+[LampiãoSec]: http://lampiaosec.github.io/
 
 # Codigo base
 
 Vamos levar em consideração pra o nosso propósito o codigo a seguir:
 
-{% highlight C %}
+~~~ c
     #include <stdio.h>
     #include <stdlib.h>
     
@@ -41,7 +45,7 @@ Vamos levar em consideração pra o nosso propósito o codigo a seguir:
 
         return 0;
     }
-{% endhighlight %}
+~~~
 
 Agora, considere que este é um progroma em cujo os valores de entrada do usuário precisam
 ser, necessariamente, um char e um int por qualquer razão que dependeria da aplicação em si.
@@ -50,25 +54,26 @@ e ainda mais, se digitou os dois valores e não apenas um?
 
 # Solução
 
-Vejo muitos codigos na internet fazendo a utilização do scanf() mas realmente poucos com 
+Vejo muitos codigos na internet fazendo a utilização do **scanf()** mas realmente poucos com 
 uma checagem de seu retorno. Nesse sentido é importante observar a manpage:
 
 #### nota:
-<font size=3>
+
+> Return value:
 >
-"RETURN VALUE</p></p>
-       On  success, these functions return the number of input items successfully
-       matched and assigned; this can be fewer than provided for, or even zero, in the
-       event of an early matching failure.</p>
-       The value EOF is returned if the end of input is reached before either the
-       first successful conversion or a matching failure occurs. EOF is also
-       returned if a read error occurs, in which case the error indicator for the
-       stream (see ferror(3)) is set, and errno is set to indicate the error."</p>
-</font>
+>   On  success, these functions return the number of input items successfully
+>   matched and assigned; this can be fewer than provided for, or even zero, in the
+>   event of an early matching failure.
+>
+>   The value EOF is returned if the end of input is reached before either the
+>   first successful conversion or a matching failure occurs. EOF is also
+>   returned if a read error occurs, in which case the error indicator for the
+>   stream (see ferror(3)) is set, and errno is set to indicate the error."
+
 
 Então podemos solucionar parte do problema alterando o codigo pra ficar mais ou menos assim:
 
-{% highlight C %}
+~~~ c
     #include <stdio.h>
     #include <stdlib.h>
     
@@ -87,7 +92,7 @@ Então podemos solucionar parte do problema alterando o codigo pra ficar mais ou
 
         return 0;
     }
-{% endhighlight %}
+~~~
 
 Então, assim verificamos se a quantidade correta de valores foi passada pelo usuário.
 
@@ -99,7 +104,7 @@ da função atoi()
 
 #### protótipo:
 
-{% highlight C %}
+~~~ c
 #include <stdlib.h>
 
        int atoi(const char *nptr);
@@ -109,7 +114,7 @@ da função atoi()
         * of the string pointed to  by  nptr  to  int.
        /*
 
-{% endhighlight %}
+~~~
 
 Para solucionar esse problema então, podemos tentar converter cada valor de entrada pra
 inteiro, utilizando essa função, caso ela retorne um valor inteiro valido, então o usuário
@@ -117,9 +122,9 @@ digitou um número e não um char, mas caso ela retorne zero, de erro, então sa
 usuário entrou com um caracetere válido. O mesmo serve para o inteiro utilizando a função
 itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria:
 
-{% highlight C%}
-    #include <stdio.h>
-    #include <stdlib.h>
+~~~ c
+#include <stdio.h>
+#include <stdlib.h>
     
     int
     main (void) {
@@ -131,18 +136,16 @@ itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria
             printf ("Error getting user input\n");
             exit (1);
         }
-        
+   
         if (atoi (&c) != 0) {
             printf ("Please, the first value must be a valid character [!!]\n");
             exit (1);
         }
 
         printf ("Caractere: %c\nNúmero: %d\n", c, d);
-
         return 0;
     }
-
-{% endhighlight %}
+~~~
 
 Caso scanf () retorne um numero diferente da quantidade de parametros, o usuário não passou
 um int como segundo parametro, pois um char pode receber um inteiro <= 127 e nesse caso, o scanf
