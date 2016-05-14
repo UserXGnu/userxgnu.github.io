@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Fat Pointers Part 1: Macros</title>
-  <meta name="description" content="  Introdução          A quem se destinam esses post’s?        Macros          O que são?      Por quê usar?      Como criar uma macro?                  Objec...">
+  <meta name="description" content="">
 
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://userxgnu.github.io/fat_pointers">
@@ -58,31 +58,28 @@
 
   <header class="post-header">
     <h1 class="post-title" itemprop="name headline">Fat Pointers Part 1: Macros</h1>
-    <p class="post-meta"><time datetime="2016-05-09T12:00:00-03:00" itemprop="datePublished">May 9, 2016</time></p>
+    <p class="post-meta"><time datetime="2016-05-10T08:00:00-03:00" itemprop="datePublished">May 10, 2016</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <ol>
-  <li>Introdução
-    <ol>
-      <li>A quem se destinam esses post’s?</li>
-    </ol>
+    <ul id="markdown-toc">
+  <li><a href="#instroduo" id="markdown-toc-instroduo">1. Instrodução</a>    <ul>
+      <li><a href="#a-quem-se-destinam-esses-posts" id="markdown-toc-a-quem-se-destinam-esses-posts">1. A quem se destinam esses post’s?</a></li>
+    </ul>
   </li>
-  <li>Macros
-    <ol>
-      <li>O que são?</li>
-      <li>Por quê usar?</li>
-      <li>Como criar uma macro?
-        <ol>
-          <li>Object-like macros</li>
-          <li>Function-like macros</li>
-        </ol>
+  <li><a href="#macros" id="markdown-toc-macros">2. Macros</a>    <ul>
+      <li><a href="#o-que-so-macros" id="markdown-toc-o-que-so-macros">1. O que são macros?</a></li>
+      <li><a href="#por-qu-usar-macros" id="markdown-toc-por-qu-usar-macros">2. Por quê usar macros?</a></li>
+      <li><a href="#como-criar-uma-macro" id="markdown-toc-como-criar-uma-macro">3. Como criar uma macro?</a>        <ul>
+          <li><a href="#object-like-macros" id="markdown-toc-object-like-macros">1. <em>Object-like</em> macros</a></li>
+          <li><a href="#function-like-macros" id="markdown-toc-function-like-macros">2. <em>Function-like</em> Macros</a></li>
+        </ul>
       </li>
-      <li>Exemplos práticos</li>
-    </ol>
+      <li><a href="#exemplos-prticos" id="markdown-toc-exemplos-prticos">4. Exemplos práticos</a></li>
+    </ul>
   </li>
-  <li>Conclusão</li>
-</ol>
+  <li><a href="#concluso" id="markdown-toc-concluso">3. Conclusão</a></li>
+</ul>
 
 <h2 id="instroduo">1. Instrodução</h2>
 
@@ -93,23 +90,22 @@ e seu paradimga.</p>
 
 <h3 id="a-quem-se-destinam-esses-posts">1. A quem se destinam esses post’s?</h3>
 
-<p>Essa série é destinada à qualquer pessoa com conhecimento básico na linguágem de programação
+<p>Essa série é destinada à qualquer pessoa com conhecimento básico na linguagem de programação
 C e esteja interessado em aprender algumas coisas interessantes que não são muito frisadas (algumas
 vezes nem citadas) nos lívros de programação. Ou seja, fazer algumas brincadeiras explorando as 
 potencialidades do C de forma esperta e útil.</p>
 
-<h5 id="nota">Nota:</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>    Os exemplos de códigos expostos em toda a série não se destinam 
+<blockquote>
+  <p><strong>Nota:</strong> Os exemplos de códigos expostos em toda a série não se destinam 
 à códigos de produção. Caso tenha interesse em desenvolver de forma 
-mais robusta utilizando tecnicas como as que mostrarei, o codigo 
+mais robusta utilizando técnicas como as que mostrarei, o código 
 precisará ser melhor elaborado dando a ele maior escalabilidade e 
-mantenabilidade.
-</code></pre>
-</div>
+mantenabilidade.</p>
+</blockquote>
 
-<h4 id="macros">2. Macros</h4>
+<h2 id="macros">2. Macros</h2>
 
-<h4 id="o-que-so-macros">1. O que são macros?</h4>
+<h3 id="o-que-so-macros">1. O que são macros?</h3>
 
 <p>Melhor que ler de mim, segue um treixo retirado da documentação do <a href="https://gcc.gnu.org/onlinedocs/cpp/Macros.html">gcc</a></p>
 
@@ -120,14 +116,14 @@ mantenabilidade.
 <p>Ou seja, você pode criar uma “label” e dar a ela um conjunto de instruções, toda vez que essa “label” for 
 encontrada no código, será substituída pelas instruções atribuídas à ela e tudo isso, em tempo de compilaçao.</p>
 
-<h4 id="por-qu-usar-macros">2. Por quê usar macros?</h4>
-<p>Bom, existem situações em que é preciso digitar certos codigos repetitivamente mas não seria legal criar função para aquilo
+<h3 id="por-qu-usar-macros">2. Por quê usar macros?</h3>
+<p>Bom, existem situações em que é preciso digitar certos códigos repetitivamente mas não seria legal criar função para aquilo
 porque poderia pesar no desempenho, então as macros entram ai pra ajudar. Além disso, existem situações mais peculiares em 
 que as macros podem ser utilizadas, para criar camadas de abstração que serão resolvidas em tempo de compilação, como dito
 anteriormente, não aumentando assim a carga do programa como um todo. (depende da implementação do que se quer abstrair). 
 Muitas vezes, o uso das macros da ao desenvolvedor, um aumento na produtividade e liberdade criatíva.</p>
 
-<h4 id="como-criar-uma-macro">3. Como criar uma macro?</h4>
+<h3 id="como-criar-uma-macro">3. Como criar uma macro?</h3>
 <p>Então, existem dois tipos de macro, as que se parecem com as declarações de tipos como <em>int</em>, conhecidas como <em>object-like</em> 
 macros e as que se parecem com as clarações de funções, conhecidas como <em>function-like</em> macros. Vamos dar um <em>zoom in</em> em 
 cada um desses tipos pra entendermos na prática.</p>
@@ -139,7 +135,7 @@ precisaremos apenas editar a macro.</p>
 
 <p>Exemplo simples:</p>
 
-<div class="language-c highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#define LINHAS       4
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#define LINHAS       4
 </span>    <span class="cp">#define COLUNAS      3
 </span>
     <span class="kt">int</span> 
@@ -161,7 +157,7 @@ toda vez que a <em>label</em> aparecer no código.</p>
 
 <p>Exemplo simples:</p>
 
-<div class="language-c highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include  &lt;stdio.h&gt;
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include  &lt;stdio.h&gt;
 </span>    
     <span class="cp">#define   SOMA(a, b)        a+b
 </span>    <span class="cp">#define   PRINT(fmt, arg)        printf(fmt, arg)
@@ -181,11 +177,11 @@ toda vez que a <em>label</em> aparecer no código.</p>
 <p>Como pode ver, as macros funcionam como funções mesmo, executam operações tal como as funções. Algumas vezes, chegam a ser até mais
 úteis, considerando o fato de que n ocupam espaço na memória.</p>
 
-<h4 id="exemplos-prticos">4. Exemplos práticos</h4>
+<h3 id="exemplos-prticos">4. Exemplos práticos</h3>
 
-<h2 id="gerador-de-funo-beseado-em-no-tipo-indicdo">Gerador de função beseado em no tipo indicdo</h2>
+<p><strong>Gerador de função beseado no tipo indicado</strong></p>
 
-<div class="language-c highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#define SOMA(type) \
     type soma(type a, type b) { \
         return a+b;\
@@ -204,14 +200,14 @@ toda vez que a <em>label</em> aparecer no código.</p>
 </code></pre>
 </div>
 
-<p>Ao chamar essa macro <em>SOMA</em> e passar um tipo de dado pra como parâmetro (<em>int</em>, <em>char</em> e etc), uma função <em>soma()</em> será declarada
-e ela será do tipo passado para macro e deverá receber dois parametros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
+<p>Ao chamar essa macro <em>SOMA</em> e passar um tipo de dado como parâmetro (<em>int</em>, <em>char</em> e etc), uma função <em>soma()</em> será declarada
+e ela será do tipo passado para macro e deverá receber dois parâmetros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
 de dádos. Imagine só você ter uma macro pra gerar uma árvore binária que irá armazenar elementos do tipo que você escolher. Se você
 precisa de uma arvore binária para inteiros, ou para strings e etc, poderá criar uma apenas chamando a macro e pronto.</p>
 
-<h2 id="for-each-demonstrao">For each, demonstração</h2>
+<p>**For each, demonstração **</p>
 
-<div class="language-c highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
 </span>    <span class="cp">#include &lt;time.h&gt;
 </span>
@@ -239,11 +235,11 @@ precisa de uma arvore binária para inteiros, ou para strings e etc, poderá cri
 <p>Nesse caso, o intuito dessa macro é percorrer o vetor e fazer, para cada elemento do vetor, o que foi passado como parâmetro em
 <em>execute_isso</em>.</p>
 
-<h4 id="concluso">3. Conclusão</h4>
+<h2 id="concluso">3. Conclusão</h2>
 
 <p>Espero ter ajudado a esclarecer o assunto, e agora devem estar se perguntando porque estou falando sobre macros num e o que isso
-tudo tem a ver com fat pointers, na realidade…nada! Contúdo, fat pointer é uma técnica e não uma feature do compilador, por essa
-razão, lidar com fat pointers acaba sendo bem custoso pro programador pela quantidade de codigo que cresce um pouco e as macros serão
+tudo tem a ver com fat pointers, na realidade…nada! contudo, fat pointer é uma técnica e não uma feature do compilador, por essa
+razão, lidar com fat pointers acaba sendo bem custoso pro programador pela quantidade de código que cresce um pouco e as macros serão
 úteis nesse sentido.</p>
 
 <p>Para aqueles que querem ficar mestres em macros e tudo mais, seguem alguns links que podem ajudar:</p>

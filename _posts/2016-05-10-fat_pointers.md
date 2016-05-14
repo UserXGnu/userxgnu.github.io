@@ -8,16 +8,8 @@ categories:
     - Hacks
 ---
 
-1. Introdução
-    1. A quem se destina essa série?
-2. Macros
-    1. O que são?
-    2. Por quê usar?
-    3. Como criar uma macro?
-        1. Object-like macros
-        2. Function-like macros
-    4. Exemplos práticos
-3. Conclusão
+* toc
+{:toc}
 
 
 ## 1. Instrodução
@@ -35,17 +27,16 @@ C e esteja interessado em aprender algumas coisas interessantes que não são mu
 vezes nem citadas) nos lívros de programação. Ou seja, fazer algumas brincadeiras explorando as 
 potencialidades do C de forma esperta e útil.
         
-##### Nota:
-        Os exemplos de códigos expostos em toda a série não se destinam 
-    à códigos de produção. Caso tenha interesse em desenvolver de forma 
-    mais robusta utilizando técnicas como as que mostrarei, o código 
-    precisará ser melhor elaborado dando a ele maior escalabilidade e 
-    mantenabilidade.
+> **Nota:** Os exemplos de códigos expostos em toda a série não se destinam 
+> à códigos de produção. Caso tenha interesse em desenvolver de forma 
+> mais robusta utilizando técnicas como as que mostrarei, o código 
+> precisará ser melhor elaborado dando a ele maior escalabilidade e 
+> mantenabilidade.
     
 
-#### 2. Macros
+## 2. Macros
 
-#### 1. O que são macros?
+### 1. O que são macros?
 
 Melhor que ler de mim, segue um treixo retirado da documentação do [gcc]
 
@@ -54,14 +45,14 @@ Melhor que ler de mim, segue um treixo retirado da documentação do [gcc]
 Ou seja, você pode criar uma "label" e dar a ela um conjunto de instruções, toda vez que essa "label" for 
 encontrada no código, será substituída pelas instruções atribuídas à ela e tudo isso, em tempo de compilaçao.
 
-#### 2. Por quê usar macros?
+### 2. Por quê usar macros?
 Bom, existem situações em que é preciso digitar certos códigos repetitivamente mas não seria legal criar função para aquilo
 porque poderia pesar no desempenho, então as macros entram ai pra ajudar. Além disso, existem situações mais peculiares em 
 que as macros podem ser utilizadas, para criar camadas de abstração que serão resolvidas em tempo de compilação, como dito
 anteriormente, não aumentando assim a carga do programa como um todo. (depende da implementação do que se quer abstrair). 
 Muitas vezes, o uso das macros da ao desenvolvedor, um aumento na produtividade e liberdade criatíva.
 
-#### 3. Como criar uma macro?
+### 3. Como criar uma macro?
 Então, existem dois tipos de macro, as que se parecem com as declarações de tipos como *int*, conhecidas como *object-like* 
 macros e as que se parecem com as clarações de funções, conhecidas como *function-like* macros. Vamos dar um *zoom in* em 
 cada um desses tipos pra entendermos na prática.
@@ -117,9 +108,9 @@ Como pode ver, as macros funcionam como funções mesmo, executam operações ta
 úteis, considerando o fato de que n ocupam espaço na memória.
 
 
-#### 4. Exemplos práticos
+### 4. Exemplos práticos
 
-## Gerador de função beseado no tipo indicado
+**Gerador de função beseado no tipo indicado**
 
 ~~~ c
     #include <stdio.h>
@@ -146,7 +137,7 @@ de dádos. Imagine só você ter uma macro pra gerar uma árvore binária que ir
 precisa de uma arvore binária para inteiros, ou para strings e etc, poderá criar uma apenas chamando a macro e pronto.
 
 
-## For each, demonstração
+**For each, demonstração **
 
 ~~~ c
     #include <stdio.h>
@@ -176,7 +167,7 @@ precisa de uma arvore binária para inteiros, ou para strings e etc, poderá cri
 Nesse caso, o intuito dessa macro é percorrer o vetor e fazer, para cada elemento do vetor, o que foi passado como parâmetro em
 *execute_isso*. 
 
-#### 3. Conclusão
+## 3. Conclusão
 
 Espero ter ajudado a esclarecer o assunto, e agora devem estar se perguntando porque estou falando sobre macros num e o que isso
 tudo tem a ver com fat pointers, na realidade...nada! contudo, fat pointer é uma técnica e não uma feature do compilador, por essa

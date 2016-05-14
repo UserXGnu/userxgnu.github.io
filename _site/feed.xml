@@ -5,9 +5,213 @@
     <description></description>
     <link>http://userxgnu.github.io/</link>
     <atom:link href="http://userxgnu.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 10 May 2016 11:30:15 -0300</pubDate>
-    <lastBuildDate>Tue, 10 May 2016 11:30:15 -0300</lastBuildDate>
+    <pubDate>Fri, 13 May 2016 21:46:34 -0300</pubDate>
+    <lastBuildDate>Fri, 13 May 2016 21:46:34 -0300</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
+    
+      <item>
+        <title>Fat Pointers Part 1: Macros</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#instroduo&quot; id=&quot;markdown-toc-instroduo&quot;&gt;1. Instrodução&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#a-quem-se-destinam-esses-posts&quot; id=&quot;markdown-toc-a-quem-se-destinam-esses-posts&quot;&gt;1. A quem se destinam esses post’s?&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#macros&quot; id=&quot;markdown-toc-macros&quot;&gt;2. Macros&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#o-que-so-macros&quot; id=&quot;markdown-toc-o-que-so-macros&quot;&gt;1. O que são macros?&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#por-qu-usar-macros&quot; id=&quot;markdown-toc-por-qu-usar-macros&quot;&gt;2. Por quê usar macros?&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#como-criar-uma-macro&quot; id=&quot;markdown-toc-como-criar-uma-macro&quot;&gt;3. Como criar uma macro?&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#object-like-macros&quot; id=&quot;markdown-toc-object-like-macros&quot;&gt;1. &lt;em&gt;Object-like&lt;/em&gt; macros&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#function-like-macros&quot; id=&quot;markdown-toc-function-like-macros&quot;&gt;2. &lt;em&gt;Function-like&lt;/em&gt; Macros&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#exemplos-prticos&quot; id=&quot;markdown-toc-exemplos-prticos&quot;&gt;4. Exemplos práticos&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#concluso&quot; id=&quot;markdown-toc-concluso&quot;&gt;3. Conclusão&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;instroduo&quot;&gt;1. Instrodução&lt;/h2&gt;
+
+&lt;p&gt;Bom, essa será uma sequencia de posts relacionados à fat pointers. Irei, primeiramente, falar sobre 
+conteúdos basicos para dar ao leitor uma compreensão maior dos assunos necessários para sua utilização
+bem como para ampliar os horizontes de possibilidades no que diz respeito às limitações da linguagem
+e seu paradimga.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-quem-se-destinam-esses-posts&quot;&gt;1. A quem se destinam esses post’s?&lt;/h3&gt;
+
+&lt;p&gt;Essa série é destinada à qualquer pessoa com conhecimento básico na linguagem de programação
+C e esteja interessado em aprender algumas coisas interessantes que não são muito frisadas (algumas
+vezes nem citadas) nos lívros de programação. Ou seja, fazer algumas brincadeiras explorando as 
+potencialidades do C de forma esperta e útil.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Nota:&lt;/strong&gt; Os exemplos de códigos expostos em toda a série não se destinam 
+à códigos de produção. Caso tenha interesse em desenvolver de forma 
+mais robusta utilizando técnicas como as que mostrarei, o código 
+precisará ser melhor elaborado dando a ele maior escalabilidade e 
+mantenabilidade.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;macros&quot;&gt;2. Macros&lt;/h2&gt;
+
+&lt;h3 id=&quot;o-que-so-macros&quot;&gt;1. O que são macros?&lt;/h3&gt;
+
+&lt;p&gt;Melhor que ler de mim, segue um treixo retirado da documentação do &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Macros.html&quot;&gt;gcc&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“A macro is a fragment of code which has been given a name. Whenever the name is used, it is replaced by the contents of the macro”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ou seja, você pode criar uma “label” e dar a ela um conjunto de instruções, toda vez que essa “label” for 
+encontrada no código, será substituída pelas instruções atribuídas à ela e tudo isso, em tempo de compilaçao.&lt;/p&gt;
+
+&lt;h3 id=&quot;por-qu-usar-macros&quot;&gt;2. Por quê usar macros?&lt;/h3&gt;
+&lt;p&gt;Bom, existem situações em que é preciso digitar certos códigos repetitivamente mas não seria legal criar função para aquilo
+porque poderia pesar no desempenho, então as macros entram ai pra ajudar. Além disso, existem situações mais peculiares em 
+que as macros podem ser utilizadas, para criar camadas de abstração que serão resolvidas em tempo de compilação, como dito
+anteriormente, não aumentando assim a carga do programa como um todo. (depende da implementação do que se quer abstrair). 
+Muitas vezes, o uso das macros da ao desenvolvedor, um aumento na produtividade e liberdade criatíva.&lt;/p&gt;
+
+&lt;h3 id=&quot;como-criar-uma-macro&quot;&gt;3. Como criar uma macro?&lt;/h3&gt;
+&lt;p&gt;Então, existem dois tipos de macro, as que se parecem com as declarações de tipos como &lt;em&gt;int&lt;/em&gt;, conhecidas como &lt;em&gt;object-like&lt;/em&gt; 
+macros e as que se parecem com as clarações de funções, conhecidas como &lt;em&gt;function-like&lt;/em&gt; macros. Vamos dar um &lt;em&gt;zoom in&lt;/em&gt; em 
+cada um desses tipos pra entendermos na prática.&lt;/p&gt;
+
+&lt;h4 id=&quot;object-like-macros&quot;&gt;1. &lt;em&gt;Object-like&lt;/em&gt; macros&lt;/h4&gt;
+&lt;p&gt;Essas são as mais simples, são feitas para determinar valores que iremos usar durante o programa em varias partes pra evitar 
+que, caso precisemos alterar aquele dado, não precisemos alterar em cada parte que o utilizamos, porque se usarmos uma macro,
+precisaremos apenas editar a macro.&lt;/p&gt;
+
+&lt;p&gt;Exemplo simples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#define LINHAS       4
+&lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#define COLUNAS      3
+&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; 
+    &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matriz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LINHAS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUNAS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Acredito que ficou bem auto-explicativo mas só por ter certeza. A instruçõe &lt;em&gt;#define&lt;/em&gt; é utilizada para definir a &lt;em&gt;label&lt;/em&gt; quem
+representar o conjunto te instruções associadas à ela, neste caso, foram apenas números, onde quer que essas &lt;em&gt;labels&lt;/em&gt; sejam 
+utilizadas serão substituidas por esses números.&lt;/p&gt;
+
+&lt;h4 id=&quot;function-like-macros&quot;&gt;2. &lt;em&gt;Function-like&lt;/em&gt; Macros&lt;/h4&gt;
+&lt;p&gt;Nesse tipo, diferente do anterior, de fato um conjunto de instruções devem ser associadas à &lt;em&gt;label&lt;/em&gt; pra que tomem seu lugar em
+toda vez que a &lt;em&gt;label&lt;/em&gt; aparecer no código.&lt;/p&gt;
+
+&lt;p&gt;Exemplo simples:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include  &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;    
+    &lt;span class=&quot;cp&quot;&gt;#define   SOMA(a, b)        a+b
+&lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#define   PRINT(fmt, arg)        printf(fmt, arg)
+&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; 
+    &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;PRINT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Soma dos valores: %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SOMA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Como pode ver, as macros funcionam como funções mesmo, executam operações tal como as funções. Algumas vezes, chegam a ser até mais
+úteis, considerando o fato de que n ocupam espaço na memória.&lt;/p&gt;
+
+&lt;h3 id=&quot;exemplos-prticos&quot;&gt;4. Exemplos práticos&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Gerador de função beseado no tipo indicado&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#define SOMA(type) \
+    type soma(type a, type b) { \
+        return a+b;\
+    }
+&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;SOMA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; 
+    &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Soma: %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;soma&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Ao chamar essa macro &lt;em&gt;SOMA&lt;/em&gt; e passar um tipo de dado como parâmetro (&lt;em&gt;int&lt;/em&gt;, &lt;em&gt;char&lt;/em&gt; e etc), uma função &lt;em&gt;soma()&lt;/em&gt; será declarada
+e ela será do tipo passado para macro e deverá receber dois parâmetros de mesmo tipo. Isso é muito útil quando se fala em estrutura 
+de dádos. Imagine só você ter uma macro pra gerar uma árvore binária que irá armazenar elementos do tipo que você escolher. Se você
+precisa de uma arvore binária para inteiros, ou para strings e etc, poderá criar uma apenas chamando a macro e pronto.&lt;/p&gt;
+
+&lt;p&gt;**For each, demonstração **&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;time.h&amp;gt;
+&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;#define FOR_EACH(indice, quantidade, execute_isso)         for(int indice = 0; indice &amp;lt; quantidade; indice++) execute_isso
+&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; 
+    &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vetor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;srand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;FOR_EACH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;vetor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;FOR_EACH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Posição: %d Valor: %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vetor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;       
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Nesse caso, o intuito dessa macro é percorrer o vetor e fazer, para cada elemento do vetor, o que foi passado como parâmetro em
+&lt;em&gt;execute_isso&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;concluso&quot;&gt;3. Conclusão&lt;/h2&gt;
+
+&lt;p&gt;Espero ter ajudado a esclarecer o assunto, e agora devem estar se perguntando porque estou falando sobre macros num e o que isso
+tudo tem a ver com fat pointers, na realidade…nada! contudo, fat pointer é uma técnica e não uma feature do compilador, por essa
+razão, lidar com fat pointers acaba sendo bem custoso pro programador pela quantidade de código que cresce um pouco e as macros serão
+úteis nesse sentido.&lt;/p&gt;
+
+&lt;p&gt;Para aqueles que querem ficar mestres em macros e tudo mais, seguem alguns links que podem ajudar:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Object-like-Macros.html#Object-like-Macros&quot; title=&quot;Documentação oficial do GCC&quot;&gt;Object-Like Macros&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Function-like-Macros.html#Function-like-Macros&quot; title=&quot;Documentação oficial do GCC&quot;&gt;Function-like Macros&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gcc.gnu.org/onlinedocs/cpp/Macro-Arguments.html#Macro-Arguments&quot; title=&quot;Documentação oficial do GCC&quot;&gt;Macro Arguments&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Tue, 10 May 2016 08:00:00 -0300</pubDate>
+        <link>http://userxgnu.github.io/fat_pointers</link>
+        <guid isPermaLink="true">http://userxgnu.github.io/fat_pointers</guid>
+        
+        
+        <category>Coding</category>
+        
+        <category>C</category>
+        
+        <category>Hacks</category>
+        
+      </item>
     
       <item>
         <title>C - Checking/Treating user input </title>
@@ -31,7 +235,7 @@ eficientes de se fazer isso…não me julguem =-D&lt;/p&gt;
 
 &lt;p&gt;Vamos levar em consideração pra o nosso propósito o codigo a seguir:&lt;/p&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
 &lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;
@@ -76,7 +280,7 @@ uma checagem de seu retorno. Nesse sentido é importante observar a manpage:&lt;
 
 &lt;p&gt;Então podemos solucionar parte do problema alterando o codigo pra ficar mais ou menos assim:&lt;/p&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
 &lt;/span&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;
@@ -107,7 +311,7 @@ da função atoi()&lt;/p&gt;
 
 &lt;h4 id=&quot;prottipo&quot;&gt;protótipo:&lt;/h4&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
 &lt;/span&gt;
        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;atoi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
@@ -125,7 +329,7 @@ digitou um número e não um char, mas caso ela retorne zero, de erro, então sa
 usuário entrou com um caracetere válido. O mesmo serve para o inteiro utilizando a função
 itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria:&lt;/p&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;stdlib.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;
@@ -187,7 +391,7 @@ e as desvantagens de cada uma. Tendo dito isso, sigamos…&lt;/p&gt;
 em qualquer compilador C de forma a garantir a compatibilidade do seu código.&lt;/p&gt;
 
 &lt;h1 id=&quot;prottipo&quot;&gt;Protótipo:&lt;/h1&gt;
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -197,7 +401,7 @@ em qualquer compilador C de forma a garantir a compatibilidade do seu código.&l
 &lt;p&gt;A função malloc(), como você deve saber, alloca &lt;size&gt; bytes de memória no heap. A idéia é que se possa alocar
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/size&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// 4 bytes
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// 4 bytes
 &lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;// 4 bytes
 &lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;// 8 bytes
 &lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;// 4 bytes
@@ -219,7 +423,7 @@ uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/size&g
 
 &lt;p&gt;– OBS:&lt;/p&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// função que desaloca &amp;lt;ptr&amp;gt; da memória.
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// função que desaloca &amp;lt;ptr&amp;gt; da memória.
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -227,7 +431,7 @@ uma quantidade de bytes não definida por um tipo primitivo. Exemplo:&lt;/size&g
   &lt;li&gt;Bom, essa é a parte em que a função Alloca() entra em jogo.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alloca&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -263,7 +467,7 @@ caso essa “função” retorne false, não aloque ou utilize malloc (), uma ve
 
 &lt;h1 id=&quot;prottipo-1&quot;&gt;Protótipo:&lt;/h1&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;cp&quot;&gt;#include &amp;lt;alloca.h&amp;gt;
 &lt;/span&gt;    
     &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -273,7 +477,7 @@ caso essa “função” retorne false, não aloque ou utilize malloc (), uma ve
   &lt;li&gt;Exemplo de substituição:&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;memset&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;// ==
 &lt;/span&gt;    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calloc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
