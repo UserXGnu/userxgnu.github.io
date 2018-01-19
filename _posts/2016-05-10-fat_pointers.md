@@ -183,5 +183,5 @@ Para aqueles que querem ficar mestres em macros e tudo mais, seguem alguns links
 
 [gcc]: https://gcc.gnu.org/onlinedocs/cpp/Macros.html
 [LampiãoSec]: http://lampiaosec.github.io
-[#ViradaHacker]: http://lampiaosec.github.io/virada-hacker
+[#ViradaHacker]: http://lampiaosec.github.io/virada-hacker     
 [#RaulHackerClube]: http://raulhc.cc

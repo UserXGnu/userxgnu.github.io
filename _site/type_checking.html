@@ -10,8 +10,8 @@
   <meta name="description" content="Do que se trata">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://userxgnu.github.io/type_checking">
-  <link rel="alternate" type="application/rss+xml" title="UserXLab" href="http://userxgnu.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/type_checking">
+  <link rel="alternate" type="application/rss+xml" title="UserXLab" href="http://localhost:4000/feed.xml">
 </head>
 
 
@@ -82,7 +82,7 @@ eficientes de se fazer isso…não me julguem =-D</p>
 
 <p>Vamos levar em consideração pra o nosso propósito o codigo a seguir:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
 </span>    
     <span class="kt">int</span>
@@ -97,15 +97,14 @@ eficientes de se fazer isso…não me julguem =-D</p>
 
         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
     <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Agora, considere que este é um progroma em cujo os valores de entrada do usuário precisam
 ser, necessariamente, um char e um int por qualquer razão que dependeria da aplicação em si.
 Como podemos garantir que o usuário digitou de fato um char e um int e n dois int’s ou dois chars
 e ainda mais, se digitou os dois valores e não apenas um?</p>
 
-<h1 id="soluo">Solução</h1>
+<h1 id="solução">Solução</h1>
 
 <p>Vejo muitos codigos na internet fazendo a utilização do <strong>scanf()</strong> mas realmente poucos com 
 uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
@@ -127,7 +126,7 @@ uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
 
 <p>Então podemos solucionar parte do problema alterando o codigo pra ficar mais ou menos assim:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#include &lt;stdio.h&gt;
 </span>    <span class="cp">#include &lt;stdlib.h&gt;
 </span>    
     <span class="kt">int</span>
@@ -145,20 +144,19 @@ uma checagem de seu retorno. Nesse sentido é importante observar a manpage:</p>
 
         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
     <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Então, assim verificamos se a quantidade correta de valores foi passada pelo usuário.</p>
 
-<h2 id="mas-ainda-no-acabou">Mas ainda não acabou</h2>
+<h2 id="mas-ainda-não-acabou">Mas ainda não acabou</h2>
 
 <p>Mas ainda existe o problema de não conseguir saber se o usuário passou os valores dos
 tipos esperados pela aplicação. Pra solucionar esse problema, verifiquei o funcionamento
 da função atoi()</p>
 
-<h4 id="prottipo">protótipo:</h4>
+<h4 id="protótipo">protótipo:</h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#include &lt;stdlib.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdlib.h&gt;
 </span>
        <span class="kt">int</span> <span class="n">atoi</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">nptr</span><span class="p">);</span>
 
@@ -167,8 +165,7 @@ da função atoi()</p>
         <span class="o">*</span> <span class="n">of</span> <span class="n">the</span> <span class="n">string</span> <span class="n">pointed</span> <span class="n">to</span>  <span class="n">by</span>  <span class="n">nptr</span>  <span class="n">to</span>  <span class="kt">int</span><span class="p">.</span>
        <span class="o">/*</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Para solucionar esse problema então, podemos tentar converter cada valor de entrada pra
 inteiro, utilizando essa função, caso ela retorne um valor inteiro valido, então o usuário
@@ -176,7 +173,7 @@ digitou um número e não um char, mas caso ela retorne zero, de erro, então sa
 usuário entrou com um caracetere válido. O mesmo serve para o inteiro utilizando a função
 itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 </span>    
     <span class="kt">int</span>
@@ -198,15 +195,14 @@ itoa (), que faz o inverso, converte um inteiro uma string. Vejamos como ficaria
         <span class="n">printf</span> <span class="p">(</span><span class="s">"Caractere: %c</span><span class="se">\n</span><span class="s">Número: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
     <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Caso scanf () retorne um numero diferente da quantidade de parametros, o usuário não passou
 um int como segundo parametro, pois um char pode receber um inteiro &lt;= 127 e nesse caso, o scanf
 retorna corretamente mas um inteiro não pode ser passado como caractere, o scanf() não consegue
 associar e então retorna o valor da quantidade de parametros que conseguiu associar.</p>
 
-<h1 id="consideraes">Considerações</h1>
+<h1 id="considerações">Considerações</h1>
 
 <p>Agradecendo ai à galera do <a href="http://lampiaosec.github.io" title="LampiãoSec">LampiãoSec</a> e à galera
 que compareceu e vem comparecendo nas viradas hacker. Qualquer contribuição será bem vista e
@@ -249,7 +245,7 @@ qualquer crítica bem aceita.</p>
       </div>
 
       <div class="footer-col footer-col-3">
-        <p>9075 FD7F CA78 4C3F B1C1  2D9E D75A FD21 D99E 2316</p>
+        <p>9D7A 24DC 3B16 DDFA DDE6  61E0 3657 4BF2 74EC 8397</p>
       </div>
     </div>
 

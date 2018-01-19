@@ -10,8 +10,8 @@
   <meta name="description" content="Prefácio">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://userxgnu.github.io/malloc_vs_alloc">
-  <link rel="alternate" type="application/rss+xml" title="UserXLab" href="http://userxgnu.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/malloc_vs_alloc">
+  <link rel="alternate" type="application/rss+xml" title="UserXLab" href="http://localhost:4000/feed.xml">
 </head>
 
 
@@ -62,7 +62,7 @@
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <h2 id="prefcio">Prefácio</h2>
+    <h2 id="prefácio">Prefácio</h2>
 
 <p>Bom, eu não poderia dizer qual das duas funções é melhor. Contúdo, posso fazer um review sobre 
 alocação dinâmica e então ressaltar as diferenças entre as duas evidenciando, é claro, as vantagens
@@ -73,24 +73,22 @@ e as desvantagens de cada uma. Tendo dito isso, sigamos…</p>
 <p>A função malloc () esta presente no header stdlib.h. Ela faz parte do ansii C e portanto, estará presente
 em qualquer compilador C de forma a garantir a compatibilidade do seu código.</p>
 
-<h1 id="prottipo">Protótipo:</h1>
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;stdlib.h&gt;
+<h1 id="protótipo">Protótipo:</h1>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#include &lt;stdlib.h&gt;
 </span>    
     <span class="kt">void</span> <span class="o">*</span> <span class="n">malloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
     <span class="kt">void</span> <span class="o">*</span> <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>A função malloc(), como você deve saber, alloca <size> bytes de memória no heap. A idéia é que se possa alocar
 uma quantidade de bytes não definida por um tipo primitivo. Exemplo:</size></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>      <span class="c1">// 4 bytes
-</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes
-</span>    <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>   <span class="c1">// 8 bytes
-</span>    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes
-</span>    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>     <span class="c1">// 1 byte
-</span></code></pre>
-</div>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>      <span class="c1">// 4 bytes</span>
+    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes</span>
+    <span class="kt">double</span> <span class="n">d</span><span class="p">;</span>   <span class="c1">// 8 bytes</span>
+    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>    <span class="c1">// 4 bytes</span>
+    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>     <span class="c1">// 1 byte</span>
+</code></pre></div></div>
 
 <p>Então caso surja a necessidade de alocar algum espaço de memória diferente desses ou suas variações (long, short e etc…), é muito comum que se use o malloc para realizar essa alocação.</p>
 
@@ -106,19 +104,17 @@ uma quantidade de bytes não definida por um tipo primitivo. Exemplo:</size></p>
 
 <p>– OBS:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span> <span class="c1">// função que desaloca &lt;ptr&gt; da memória.
-</span></code></pre>
-</div>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">free</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">ptr</span><span class="p">);</span> <span class="c1">// função que desaloca &lt;ptr&gt; da memória.</span>
+</code></pre></div></div>
 
 <ul>
   <li>Bom, essa é a parte em que a função Alloca() entra em jogo.</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;alloca.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#include &lt;alloca.h&gt;
 </span>    
     <span class="kt">void</span> <span class="o">*</span> <span class="n">alloca</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>A função alloca(), aloca dinamicamente size bytes na memória, contudo, não utiliza o heap, neste caso, a variável é alocada na stack mesmo. O desempenho acaba sendo melhor por não utilizar o heap, contúdo, alguns cuidados devem ser tomados. Vamos lá…</p>
 
@@ -132,11 +128,11 @@ caso essa “função” retorne false, não aloque ou utilize malloc (), uma ve
   </li>
 </ol>
 
-<h1 id="por-que-tanta-preocupao-para-usar-essa-funo-ento-">Por que tanta preocupação para usar essa função então ???</h1>
+<h1 id="por-que-tanta-preocupação-para-usar-essa-função-então-">Por que tanta preocupação para usar essa função então ???</h1>
 
 <p>Quando a função alloca() é chamada por outra função, a função que a chama, possui uma stack própria chamada stack frame, neste caso, os bytes serão alocados no próprio stackframe da função que chamou alloca(), o que significa que quando a função se encerrar, o stackframe da função deixará de existir e os bytes alocados se perderão. A boa notícia, você não terá mais a responsabilidade de desalocar os bytes que alocou dinamicamente (não use free () para tentar desalocar esses bytes manualmente). A má nóticia é que vc deve ser cauteloso ao utilizar o alloca ().</p>
 
-<h1 id="concluses">Conclusões:</h1>
+<h1 id="conclusões">Conclusões:</h1>
 
 <p>A função alloca() possui um significativo melhor desempenho mas possui restrições como limite de tamanho a ser alocado, e perda da alocação com o final da funçao que a alocou. Além disso, a ela não foi implementada por todos os compiladores e não faz parte do ansii C, mesmo entre os compiladores que a implementaram, existem divergências de implementações o que pode gerar comportamentos inesperado caso compile o mesmo codigo utilizando-a em compiladores diferentes. (use GCC, be happy!).</p>
 
@@ -148,24 +144,22 @@ caso essa “função” retorne false, não aloque ou utilize malloc (), uma ve
   <li>Caso a sua alocação não possua uma característica crítica no que diz respeito a desempenho, e você optou pela utilização da função malloc (), ou vc esta manipulando strings utilizando alocação dinâmica com malloc(), considere a utilização da função calloc(), essa função funciona de forma análoga à malloc(), contudo, os bytes alocados são inicializados com “0”, evitando a necessidade de incializá-los.</li>
 </ul>
 
-<h1 id="prottipo-1">Protótipo:</h1>
+<h1 id="protótipo-1">Protótipo:</h1>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="cp">#include &lt;alloca.h&gt;
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#include &lt;alloca.h&gt;
 </span>    
     <span class="kt">void</span> <span class="o">*</span> <span class="n">calloc</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ul>
   <li>Exemplo de substituição:</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span> <span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span> <span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
     <span class="n">memset</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">c</span><span class="p">));</span>
-    <span class="c1">// ==
-</span>    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">char</span><span class="p">));</span>
-</code></pre>
-</div>
+    <span class="c1">// ==</span>
+    <span class="kt">char</span> <span class="o">*</span> <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">calloc</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">char</span><span class="p">));</span>
+</code></pre></div></div>
 
 <p>Bom galera, espero que tenham gostado e que eu tenha esclarecido ao menos um pouco essa questão da alocação dinâmica e qual a melhor
 escolha de allocator caso-a-caso.</p>
@@ -207,7 +201,7 @@ escolha de allocator caso-a-caso.</p>
       </div>
 
       <div class="footer-col footer-col-3">
-        <p>9075 FD7F CA78 4C3F B1C1  2D9E D75A FD21 D99E 2316</p>
+        <p>9D7A 24DC 3B16 DDFA DDE6  61E0 3657 4BF2 74EC 8397</p>
       </div>
     </div>
 

@@ -9,11 +9,11 @@
 title: UserXLab
 email: user_x@riseup.net
 #description: > # this means to ignore newlines until "baseurl:"
-  
+
 #  Write an awesome description for your new site here. You can edit this
 #  line in _config.yml. It will appear in your document head meta (for
 #  Google search results) and in your feed.xml site description.
-gpgfingerprint: "9075 FD7F CA78 4C3F B1C1  2D9E D75A FD21 D99E 2316"
+gpgfingerprint: "9D7A 24DC 3B16 DDFA DDE6  61E0 3657 4BF2 74EC 8397"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://userxgnu.github.io" # the base hostname & protocol for your site
 github_username:  UserXGnu

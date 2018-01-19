@@ -4,10 +4,9 @@ title: About
 permalink: /about/
 ---
 
-Apenas mais um coder curioso. Gosto de lingaugens de baixo nível, sou realmente apaixonado por C.
-Gosto da temática segurança da informação. Co-fundador do [LampiãoSec]
-Membro ativo do [#RaulHackerClube] e entusiasta em software livre. (apaixonado por Linux e sua cultura).
-Adepto da cultura hacker e profundamente disposto a contribuir para com a comunidade da forma que puder.
+Another coder that fell in love for lowlevel stuff like reverse engineering, 
+exploit development and, of course, assembly programming and C language as well.
+Passionate for IT security, pentester and developer. Co-founder of [LmpiãoSec](lampiaosec.github.com),
+active member of [Raul Hacker Clube](raulhc.cc), free software supporter and enthusiast,
+adept of Hacking culture and always on the mood for contributting in anyway.
 
-[#RaulHackerClube]: http://raulhc.cc
-[LampiãoSec]: http://lampiaosec.github.io
